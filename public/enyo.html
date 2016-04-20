@@ -1,0 +1,119 @@
+<html>
+	<head>
+		<title>React.js Performance Tests</title>
+		<link href="./bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+		<link href="./css/style.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container">
+			<h1>Enyo.js Performance Tests</i></h1>
+			<br>
+			<div class="row">
+				<div class="col-sm-9">
+					<ul class="nav nav-pills">
+						<li role="presentation"><a href="react.html">React</a></li>
+						<li role="presentation" class="active"><a href="enyo.html">Enyo</a></li>
+						<li role="presentation"><a href="polymer.html">Polymer</a></li>
+						<li role="presentation" class="pull-right"><a href="./v1/react.html">v1</a></li>
+						<li role="presentation" class="pull-right active"><a href="./v2/react.html">v2</a></li>
+					</ul>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-sm-9">
+					<div id="dashboard"></div>
+				</div>
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label for="total-input">Total: </label>
+						<input type="text" class="form-control init" id="total-input" value="10000">
+					</div>
+					<div class="form-group">
+						<label for="change-input">Change: </label>
+						<input type="text" class="form-control init" id="change-input" value="2000">
+					</div>
+					<div class="form-group">
+						<button type="button" class="btn btn-primary" id="update-btn">Update</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="./bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="./js/enyo/enyo.js"></script>
+		<script src="./js/data.js"></script>
+		<script src="./js/enyo/dashboard.js"></script>
+		<script>
+			var kind = require('enyo/kind'),
+					Repeater = require('enyo/DataRepeater'),
+					Control = require('enyo/Control');
+
+			var _enyoApp;
+
+			function initialize() {
+				console.log('enyo - start : ' + new Date());
+				factory.init({
+					maxCount: $('#total-input').val(),
+					changeCount: $('#change-input').val()
+				});
+
+				var app = new kind(Dashboard);
+				_enyoApp = new app();
+				_enyoApp.renderInto(document.getElementById("dashboard"));
+			}
+
+			function update() {
+				_enyoApp.update();
+			}
+
+			var Dashboard = {
+					name: 'enyo.Dashboard',
+					kind: Repeater,
+					components: [
+						{kind: "enyo.DashboardItem", bindings: [
+							{from:'model.color', to: 'color'},
+							{from:'model.val', to: 'val'}
+						]}
+					],
+					create: function () {
+						this.inherited(arguments);
+						this.set('collection', factory.data);
+					},
+					rendered: function () {
+						this.inherited(arguments);
+						console.log('enyo - end : ' + new Date());
+					},
+					update: function () {
+						factory.update();
+						this.set('collection', factory.data);
+						this.refresh();
+					},
+					addCounter: function(list) {
+						return list.concat([0]);
+					}
+			};
+
+			var DashboardItem = new kind({
+					name: "enyo.DashboardItem",
+					published: {
+						color: null,
+						val: null
+					},
+					components: [
+							{name: 'item', tag: 'label', allowHtml: true, content: ''}
+					],
+					rendered: function () {
+						this.inherited(arguments);
+					},
+					valChanged: function () {
+						this.set('style', 'padding: 0 5 0 5; display: inline-block; background-color: '+this.color+';');
+						this.$.item.setContent('<span class="">' + this.val + ' %</span>');
+					}
+			});
+			$(function () {
+				initialize();
+				$('#update-btn').on('click', update);
+			});
+		</script>
+	</body>
+</html>

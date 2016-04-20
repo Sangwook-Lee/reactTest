@@ -1,0 +1,64 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<script src="../data.js"></script>
+<dom-module id="my-dashboard">
+
+	<template>
+		<template id="repeater" is="dom-repeat" items="{{data}}" as="address">
+				<div style$="padding: 0 5 0 5; display: inline-block; background: {{address.color}}">
+					<label>{{address.val}}%</label>
+				</div>
+		</template>
+	</template>
+
+	<script>
+	MyElement = Polymer({
+		is: "my-dashboard",
+		properties: {
+			data: {
+				type: Array,
+				value: function() { return []; }
+			},
+			options: {
+				type: Object,
+				value: function() { return {}; }
+			}
+		},
+		init: function(optionsIn) {
+			this.options = optionsIn;
+
+			for (var i = 0; i < this.options.maxCount; i++) {
+				var stateNum = Math.round(Math.random() * 100);
+				this.push('data', { val: stateNum, color: this.getStateColor(stateNum) });
+			}
+		},
+
+		update: function() {
+			for (var i = 0; i < this.options.changeCount; i++) {
+				var stateNum = Math.round(Math.random() * 100);
+				this.splice('data', Math.round(Math.random() * this.options.maxCount), 1, { val: stateNum, color: this.getStateColor(stateNum) });
+			}
+		},
+
+		getStateColor: function(state) {
+
+			var colour = 'lightGray';
+			var stateNum = +state;
+
+			if (stateNum === 0) {
+				colour = 'red';
+			}
+			else if (stateNum === 100) {
+				colour = 'lime';
+			}
+			else if ((stateNum > 0) && (stateNum < 1)) {
+				colour = 'rgb(255, 141, 0)';
+			}
+			else if ((stateNum >= 1) && (stateNum < 100)) {
+				colour = 'rgb(255, ' + (140 + Math.floor(stateNum)) + ', 0)';
+			}
+
+			return colour;
+		}
+	});
+	</script>
+</dom-module>

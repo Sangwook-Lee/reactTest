@@ -1,0 +1,44 @@
+.row {
+	margin-right: -15px;
+	margin-left: -15px;
+}
+
+.col-md-12 {
+	width: 100%;
+	float: left;
+	position: relative;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+.test-data {
+	margin-bottom:3px;
+}
+
+.test-data span {
+	padding:3px 10px;
+	background:#EEE;
+	width:100%;
+	float:left;
+	cursor:pointer;
+}
+
+.test-data span:hover {
+	background:#DDD;
+}
+
+.test-data span.selected {
+	background:#3F7AD9;
+	color:white;
+}
+
+.time {
+	font-weight:bold;
+	height:26px;
+	line-height:26px;
+	vertical-align:middle;
+	display:inline-block;
+	cursor:pointer;
+	text-decoration:underline;
+}
